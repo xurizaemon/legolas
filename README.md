@@ -1,9 +1,7 @@
 Legolas
 =======
 
-## Why "legolas"?
-
-OK look I just thought of a word that started with "leg", it's just a placeholder.
+_Make legislation a conversation._
 
 ## Concept
 
@@ -47,3 +45,11 @@ And letting people propose changes to law (fork & pull-req model, but without th
  * As CMS
 
 ## Methodology
+
+...
+
+## FAQ
+
+### Why "legolas"?
+
+OK look I just thought of a word that started with "leg", it's just a placeholder.
