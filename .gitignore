@@ -1,0 +1,5 @@
+node_modules
+pdfs
+.env
+start.sh
+npm-debug.log
