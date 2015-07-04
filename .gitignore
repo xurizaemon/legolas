@@ -3,3 +3,6 @@ pdfs
 .env
 start.sh
 npm-debug.log
+.DS_Store
+tmp
+
