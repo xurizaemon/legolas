@@ -3,6 +3,8 @@ Legolas
 
 _Make legislation a conversation._
 
+![legolas](https://cloud.githubusercontent.com/assets/105608/8506036/8b8d9266-2253-11e5-9894-9cffa5516c95.png)
+
 ## Concept
 
 A builder sees the walls of your kitchen as something mutable. Citizens should see law as something they can engage and be active stakeholders in.
