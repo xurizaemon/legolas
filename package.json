@@ -24,7 +24,6 @@
   },
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "93370f17dc45677ff85d357230de5fd8d69a7520",
   "dependencies": {
     "xml2js": "0.4.9",
     "shagit": "0.0.1",
@@ -34,6 +33,9 @@
     "lodash": "^3.6.0",
     "async": "^0.9.0",
     "cheerio": "^0.19.0",
-    "request": "^2.54.0"
+    "request": "^2.54.0",
+    "fs-extra": "^0.20.1",
+    "xml2js": "^0.4.9",
+    "drupal-services-api": "^0.1.4"
   }
 }
