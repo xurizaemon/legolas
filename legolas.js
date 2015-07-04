@@ -14,10 +14,11 @@ const async = require('async'),
   fs = require('fs'),
   xml2js = require('xml2js'),
   drupal = require('drupal-services-api'),
+  dateFormat = require('dateformat'),
   baseURI = 'http://legislation.govt.nz',
   // crawlStart = '/subscribe/',
   /* For testing, just this year's public acts. */
-  crawlStart = '/subscribe/act/public/2015',
+  crawlStart = '/subscribe/act/public/2013',
   downloadPath = './pdfs',
   storeUrl = 'http://legolas.nz/rest/',
   retried = {};
@@ -47,9 +48,13 @@ function crawlSearch(path, callback) {
         // console.log($);
         const links = $('a');
 
+        // @see https://twitter.com/theunfocused/status/617253086902423552
+        // for (let link of links) {
+        // but TypeError: Property 'Symbol(Symbol.iterator)_4.ykrhyidqxan8w7b9' of object (html string)
+        // so maybe need cheerio's output to be arrayish not stringish to for
         _.each(links, function(a) {
           let path = url.parse($(a).attr('href')).pathname;
-          if (path.match(/.*\.pdf$/)) {
+          if (path.match(/.*\.(pdf|svg)$/)) {
             console.log('Adding PDF ' + path + ' to fetch queue.');
             downloadQueue.push(path);
           }
@@ -70,7 +75,7 @@ function crawlSearch(path, callback) {
 
 function downloadLegislation(path, callback) {
   var m = false;
-  if (m = path.match(/\/subscribe\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.+?\.pdf)/)) {
+  if (m = path.match(/\/subscribe\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.+?\.(pdf|svg))/)) {
     var fileUrl = baseURI + path;
     var fileName = m[6];
     m = m.slice(1, 6);
@@ -105,33 +110,58 @@ function importLegislation(path, callback) {
     fse.mkdirs(filePath, function (err) {
       if (err) return console.error(err);
       var file = fs.createWriteStream([filePath, fileName].join('/'));
+      var actTitle = fileName;
+      var actAssent = '1970-01-01';
       request.get(fileUrl, function(err, response, body) {
-        client.create({
-          type: 'act',
-          title: 'Some act with body',
-          body: {
-            und: [{
-              value: body,
-              format: 'filtered_html'
-            }]
-          },
-          field_source_xml: {
-            und: [{
-              value: body
-            }]
-          }
-        }).then(function(newAct) {
-          client.retrieve(newAct.nid).then(function(retrievedAct) {
-            console.log(retrievedAct, 'new article');
-            console.log(retrievedAct.body);
+        xml2js.parseString(body, function(err, result) {
+          actTitle = result['act']['cover'][0]['title'][0];
+          actAssent = dateFormat(result['act']['cover'][0]['assent'], 'yyyy-mm-dd 12:00:00 +1200');
+          // console.log(result['act']['cover'][0]);
+          var bodyText = body.toString();
+          let createNode = {
+            type: 'act',
+            title: actTitle,
+            // updated: actAssent,
+            // created: actAssent,
+            body: {
+              und: [{
+                value: 'some html',
+                format: 'filtered_html'
+              }]
+            },
+            field_source_xml: {
+              und: [{
+                value: bodyText,
+                format: 'full_html'
+              }]
+            }
+          };
+          client.create(createNode)
+          .catch(function (error) {
+            if (typeof error.error.form_errors !== 'undefined') {
+              console.log(error.error.form_errors, 'validation error');
+              console.log(createNode, 'cnt');
+              process.exit(1);
+            }
+            else {
+              console.log(error, 'error');
+            }
+          })
+          .then(function(newAct) {
+            /*
+              client.retrieve(newAct.nid).then(function(retrievedAct) {
+                console.log(retrievedAct, 'new article');
+                console.log(retrievedAct.body);
+              });
+            */
           });
         });
+        // console.log(actTitle, 'title');
       })
         .on('error', function(err) {
           console.log(err);
         })
         .pipe(file);
-      return;
       console.log('Saved ' + fileUrl + ' to ' + fileName);
     });
   }
