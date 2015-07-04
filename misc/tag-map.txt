@@ -1,0 +1,328 @@
+.deleted
+a.amending-provision
+a.externallink
+a.extref,
+a.intref,
+a.leg-title,
+a.term,
+a.toc,
+h6.subprov-crosshead
+p.labelled
+span.q,
+h6.subprov-crosshead
+p.labelled
+blockquote.amend h2.first,
+blockquote.amend h3.first,
+blockquote.amend h4.first,
+blockquote.amend h5.first,
+blockquote.amend h6.first
+blockquote.amend-increment-1
+blockquote.amend-increment-2
+blockquote.amend-increment-3
+blockquote.instrument-amend-default-margin
+blockquote.quote-indented
+span.q
+dfn.def-term
+div.assent-block p.para
+div.assent-block p.sig-officer
+div.assent-block p.sig-para
+div.commentary blockquote.quote
+div.contents div.key
+div.contents-note p
+div.cover
+div.cover-reprint-note
+div.crest
+div.end h2.explnote,
+div.example h1,
+div.example h2,
+div.example h3,
+div.example h4,
+div.example h5
+div.example h6
+div.example h6.heading
+div.example h6.subheading
+div.example p,
+div.example
+div.external-document
+div.flush-left-margin-1
+div.flush-left-margin-2
+div.flush-left-margin-3
+div.flush-left-margin-4
+div.form h4.head4
+div.graphic
+div.graphic-text,
+div.key h2.heading,
+div.key h3.subheading,
+div.key,
+div.key1 h2.heading,
+div.key1 h3.subheading,
+div.key1
+div.key2 h2.heading
+div.key2 h3.subheading
+div.key2
+div.label-only
+div.long-title h1,
+div.long-title h2,
+div.long-title h3,
+div.long-title h4,
+div.long-title h5,
+div.long-title h6
+div.long-title p.history-note
+div.long-title
+div.ocboxnote p
+div.ocboxnote
+div.promulgation p.admin-office
+div.promulgation
+div.prov ul.prov li p.headless
+div.pursuant p.para
+div.readers-notes
+div.reprint p.admin-office
+div.schedule-amendments h4.head4
+div.schedule-forms h4.head4,
+div.schedule-provisions h2.part
+div.schedule-provisions h3.subpart
+div.schedule-provisions h4.crosshead
+div.signature-block p.sig-para
+div.skeleton-reg-end h2.explnote
+div.sop-newenact p.enactment
+div.sop-newenact
+div.table td
+div.table th
+div.table th[align="center"]
+div.table th[align="right"]
+div.tableCentered div.tableContainer
+div.tableCentered
+div.tableCentered,
+div.tableFullWidth table
+div.tableFullWidth
+div.tableLeft,
+div.tableRight div.tableContainer
+div.tableRight
+div.tableRight,
+div.toc p
+div.toc p.clause-ref
+div.toc p.conv a.label
+div.toc p.conv
+div.toc p.conv,
+div.toc p.crosshead a.toc span.spc,
+div.toc p.crosshead,
+div.toc p.figure a.label
+div.toc p.figure
+div.toc p.form a.label
+div.toc p.form
+div.toc p.hdr-before
+div.toc p.head1 a.label
+div.toc p.head1
+div.toc p.head2 a.label
+div.toc p.head2
+div.toc p.head3 a.toc span.spc,
+div.toc p.head3,
+div.toc p.head4 a.toc span.spc
+div.toc p.head4
+div.toc p.head6
+div.toc p.ird-crosshead a.toc span.spc,
+div.toc p.ird-crosshead,
+div.toc p.leg-history
+div.toc p.omitted-provs
+div.toc p.part a.label,
+div.toc p.part,
+div.toc p.preamble
+div.toc p.schedule a.label,
+div.toc p.schedule,
+div.toc p.schedule-amendments-group1 a.label,
+div.toc p.schedule-amendments-group1
+div.toc p.schedule-amendments-group1,
+div.toc p.schedule-group a.label,
+div.toc p.schedule-group,
+div.toc p.skeleton-act,
+div.toc p.skeleton-reg
+div.toc p.sop-part
+div.toc p.subpart a.label,
+div.toc p.subpart,
+div.toc ul
+div.toc
+div.toc-amend
+div.toc-schedule-provisions p.crosshead
+div.toc-schedule-provisions p.part
+div.toc-schedule-provisions p.subpart
+dt.variable
+em.emphasis
+em.intref
+h1.sop-heading
+h1.sop-heading,
+h1.title
+h2.billnote
+h2.commentary
+h2.contents
+h2.explnote
+h2.explnote-part
+h2.explnote-ris
+h2.head1
+h2.head1,
+h2.labelled span.label,
+h2.labelled,
+h2.leg-history
+h2.made
+h2.part,
+h2.regulation-type
+h2.schedule,
+h2.schedule-amendments-group1
+h2.schedule-amendments-group1,
+h2.schedule-group
+h2.schedule-group,
+h2.sop-body
+h2.sop-part
+h3.comm-appendix
+h3.comm-lev1,
+h3.conv
+h3.conv,
+h3.explnote-group
+h3.explnote-subpart
+h3.head2
+h3.head2,
+h3.heading
+h3.labelled span.label,
+h3.labelled,
+h3.sop-subpart,
+h3.subpart
+h3.subpart,
+h4.comm-lev2
+h4.crosshead,
+h4.explnote-crosshead
+h4.explnote-ird-crosshead
+h4.explnote-subgroup
+h4.form span.label a.label
+h4.form
+h4.head3,
+h4.head4
+h4.ird-crosshead,
+h4.labelled span.label,
+h4.labelled,
+h4.preamble
+h4.reprint-index
+h5.comm-lev3
+h5.explnote-subhead1
+h5.explnote-subhead2
+h5.head5,
+h5.head6
+h5.head6,
+h5.labelled span.label,
+h5.labelled,
+h5.preamble-block
+h5.prov,
+h5.reprint-notes
+h5.schedule-amendments-group2
+h6.cover-reprint-note
+h6.figure span.label
+h6.figure
+h6.label-para-crosshead
+h6.labelled span.label
+h6.labelled
+h6.preamble-headlev2
+h6.preamble-headlev3
+h6.reprint-note
+h6.schedule-amendments-group3
+h6.subprov-crosshead,
+h6.table
+hr.cover-reprint-note
+hr.footnotes
+hr.sig-separator
+hr.sop-body
+img.crest
+img.graphic-inline
+p.admin-office
+p.authorisation
+p.bill-identifier
+p.billref
+p.billtype
+p.cf
+p.clause-ref
+p.conv-deleted,
+p.crosshead-deleted,
+p.empowering-prov
+p.enactment
+p.eqn-line
+p.figure-deleted,
+p.footnote
+p.form-deleted
+p.gazette-date
+p.gg
+p.head1-deleted,
+p.head2-deleted
+p.head3-deleted,
+p.head4-deleted
+p.headless span.label
+p.history-note
+p.house,
+p.ird-crosshead-deleted,
+p.issue-authority,
+p.labelled a.label
+p.labelled span.label,
+p.labelled
+p.made-at,
+p.made-present
+p.member
+p.motion
+p.omitted-provs
+p.part-deleted,
+p.proclamation
+p.repnote
+p.reprint-amend
+p.reprint-date
+p.reprint-sr-number,
+p.schedule-amendments-group1-deleted
+p.schedule-deleted,
+p.schedule-group-deleted,
+p.sig-officer
+p.sop-date
+p.statutory-regulation-number
+p.subpart-deleted,
+p.term-list
+p.title-former
+p.toc-head4
+p.toc-ird-crosshead,
+span.changeable
+span.field
+span.fraction sub.denominator
+span.fraction sup.numerator,
+span.fraction,
+span.graphic-text
+span.leader
+span.leader,
+span.omitted-prov
+span.spc
+sub.denominator
+sup.footnote-ref
+sup.numerator,
+table.cover-properties td
+table.cover-properties td.commencement
+table.cover-properties td.date-of-assent,
+table.cover-properties td.document-type,
+table.cover-properties
+table.empowering-prov-layout td
+table.empowering-prov-layout td.empowering-prov
+table.empowering-prov-layout tr td h2,
+table.empowering-prov-layout tr td h3,
+table.empowering-prov-layout tr td h4,
+table.empowering-prov-layout tr td h5,
+table.empowering-prov-layout tr td h6
+table.empowering-prov-layout
+table.frame-bottom
+table.frame-default
+table.frame-none,
+table.frame-sides
+table.frame-top
+table.frame-topbot
+table.header tr
+table.leg-history td
+table.leg-history td.date,
+table.leg-history td.date-text
+td.rowsep,
+th.rowsep
+ul.head5
+ul.history
+ul.label-only,
+ul.label-only-last
+ul.list li
+ul.list li.bull
+ul.list
