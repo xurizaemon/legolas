@@ -1,0 +1,13 @@
+$bp-phone: 480px;
+$bp-phone-max: max-width 480px;
+$bp-tablet: 768px;
+$bp-tablet-max: max-width 767px;
+$bp-desktop: 992px;
+$bp-lg-desktop: 1200px;
+$bp-sm-desktop: 768px 992px;
+
+$lightgrey: #eaeaea;
+$brand-mid: #444444;
+$brand-dark: shade($brand-mid, 25%);
+$brand-light: tint($brand-mid, 50%);
+$brand-verylight: tint($brand-mid, 75%);

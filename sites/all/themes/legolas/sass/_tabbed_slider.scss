@@ -1,0 +1,78 @@
+.block-tabbed-slider {
+  display: none;
+  @include breakpoint($bp-desktop) {
+    display: block;
+  }
+  margin-bottom: 20px;
+
+  .tabbedslider {
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #02718F;
+    border-radius: 5px;
+    .slides {
+      width: 568px;
+      height: 140px;
+      padding-right: 150px;
+    }
+    .slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      /*
+      .field-name-body {
+        position: absolute;
+        right: 150px;
+        top: 0;
+        bottom: 0;
+        width: 340px;
+        // background: #02718F;
+        // color: #fff;
+        padding: 15px;
+        padding-top: 0;
+      }
+     */
+      .field-name-field-image,
+      .field-name-body {
+        float: left;
+      }
+      .field-name-field-image {
+        width: 35%;
+        overflow: hidden;
+      }
+      .field-name-body {
+        width: 65%;
+        padding: 10px;
+      }
+      p {
+        font-size: 12px;
+        line-height: 15px;
+      }
+      a {
+        color: #F79021;
+      }
+    }
+    .field {
+      margin: 0;
+    }
+    .nav {
+      overflow: hidden;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      width: 150px;
+      z-index: 10;
+      background: #03a2cc;
+      a {
+        display: block;
+        color: #fff;
+        padding: 2px 7px 2px 7px;
+        font-weight: bold;
+      }
+      a.activeSlide {
+        background: #02718F;
+      }
+    }
+  }
+}

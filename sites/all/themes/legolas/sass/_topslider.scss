@@ -1,0 +1,18 @@
+/**
+ * Pretty sure this should go, but ... demoing.
+ */
+#top_slider {
+  .slides {
+    height: 185px;
+  }
+  .nav a {
+    padding: 0 1em;
+  }
+  .field-name-field-image {
+    @include make-sm-column(3);    
+  }
+
+  .field-name-body {
+    @include make-sm-column(9);
+  }    
+}

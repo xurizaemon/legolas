@@ -1,0 +1,76 @@
+h1, h2, h3, h4, h5, h6 {
+  color: $brand-dark;
+}
+
+// This mimics the behaviour of the Legislation site where legislation
+// is set on white against a shaded background to focus on the act text.
+.node-type-act {
+  .main-container {
+    .row {
+      background-color: $brand-verylight;
+      .field-name-field-source-xml {
+        padding: 20px 50px;
+        background-color: white;
+      }
+      .submitted,
+      .form-item-subject,
+      .field-name-field-reference {
+        display: none;
+        font-size: 50%;
+      }
+      .comment {
+        h3 {
+          font-size: 100%;
+        }
+      }
+    }
+  }
+}
+
+.main-container {
+  padding-bottom: 20px;
+
+  h1.page-header {
+    margin-top: 10px;
+  }
+}
+
+#block-views-legislation-block-1 {
+
+}
+
+.leg-act {
+  .para-link,
+  .para-comment {
+    font-size: x-small;
+
+  }
+}
+
+body.front {
+  #block-views-legislation-block-1,
+  #block-views-legislation-block-2 {
+    margin-top: 10px;
+    @include make-sm-column(6);
+  }
+}
+
+.front-video,
+.front-content {
+  width: 100%;
+  @include make-sm-column(6);
+  iframe {
+    @include breakpoint ($bp-tablet) {
+      width: 360px;
+      height: 202px;
+    }
+    @include breakpoint ($bp-desktop) {
+      width: 450px;
+      height: 264px;
+    }
+    @include breakpoint ($bp-lg-desktop) {
+      width: 560px;
+      height: 315px; 
+    }
+  }
+}

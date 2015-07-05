@@ -1,0 +1,18 @@
+body {
+  &.without-breadcrumb {
+    .main-container {
+      padding-top: 30px;
+    }
+  }
+  &.with-breadcrumb {
+    .main-container {
+      > div > aside {
+        padding-top: 30px;
+      }
+    }
+  }
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+}

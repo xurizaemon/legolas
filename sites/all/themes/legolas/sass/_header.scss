@@ -1,0 +1,26 @@
+.navbar-header {
+  @include breakpoint($bp-phone-max) {
+    a.logo {
+      width: 100%;
+      img {
+        width: 125px;
+        height: 60px;
+      }
+    }
+  }
+}
+
+.search-wrapper {
+  @include make-sm-column(4);
+  width: auto;
+  margin-top: 20px;
+  @include breakpoint($bp-tablet) {
+    float: right;
+  }
+  @include breakpoint($bp-tablet-max) {
+    float: right;
+    width: 80%;
+    margin-top: 3px;
+    padding-right: 0;
+  }
+}

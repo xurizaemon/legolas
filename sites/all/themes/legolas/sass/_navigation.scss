@@ -1,0 +1,147 @@
+.nav {
+  > li {
+    > a {
+      padding: 10px;
+      // font-size: 12px;
+    }
+  }
+}
+
+.navbar-default {
+  // Reverse container padding.
+  @include breakpoint($bp-tablet) {
+    nav {
+      margin: 0 -30px;
+    }
+  }
+
+  .navbar-nav {
+    @include make-sm-column(12);
+
+    // Link items are white.
+    li {
+      a,
+      a:focus,
+      a:hover {
+        color: white;
+      }
+      &,
+      &.open {
+        a.active-trail,
+        a.active {
+          &,
+          &:hover {
+            color: gold;
+          }
+        }
+      }
+      &.open,
+      &.active {
+        > a,
+        > a:hover,
+        > a:focus {
+          background-color: $brand-mid;
+        }
+        &:focus,
+        &:hover {
+          background-color: $brand-mid;
+        }
+      }
+      > .dropdown {
+        a,
+        a:hover,
+        a:focus {
+          .caret {
+            border-top-color: white;
+            border-bottom-color: white;
+          }
+        }
+      }
+      &.menu-link-classes {
+        display: none;
+        @include breakpoint($bp-tablet) {
+          &.desktop {
+            display: list-item;
+          }
+        }
+        @include breakpoint(max-width 767px) {
+          &.mobile {
+            display: list-item;
+          }
+        }
+      }
+    }
+    .dropdown-menu {
+      border-top: 2px solid $brand-mid;
+      margin-top: -2px;
+      li {
+        a:hover,
+        a:focus {
+          background-color: $brand-mid;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+.navbar-default {
+  .navbar-nav.secondary {
+    position: absolute;
+    top: 55px;
+    right: 15px;
+    width: auto;
+    float: right;
+    background-color: transparent;
+    ul,
+    li {
+      background-color: transparent;
+      a,
+      a.active,
+      a:hover {
+        color: $brand-dark;
+        background-color: transparent;
+        text-transform: uppercase;
+        font-size: 10px;
+        padding: 10px 5px;
+      }
+      a.last {
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+// Accordion menu colours.
+@include breakpoint($bp-tablet-max) {
+  .navbar-default {
+    .navbar-nav {
+      .open {
+        .dropdown-menu > li {
+          > a,
+          > a:hover,
+          > a:focus {
+            background-color: $brand-dark;
+            color: white;
+          }
+        }
+      }
+      > .open {
+        > a,
+        > a:hover,
+        > a:focus {
+          background-color: $brand-dark;
+        }
+      }
+    }
+  }
+}
+
+// Hide items with .mobile-hidden if below tablet size.
+@include breakpoint ($bp-tablet-max) {
+  .navbar {
+    a.mobile-hidden {
+      display: none;
+    }
+  }
+}

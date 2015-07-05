@@ -1,0 +1,49 @@
+footer.dev-footer {
+  background-color: #999;
+  margin-top: 50px;
+  border: 2px dashed #666;
+
+  section {
+    @include make-sm-column(4);
+    padding: 10px;
+  }
+}
+
+[class*="span"] { background: #EEF; }
+[class*="span"] [class*="span"] { background: #FEE; }
+
+#block-block-65,
+#block-block-66 {
+  padding: 10px;
+}
+#block-block-65 {
+  background-color: #ccf;
+}
+#block-block-66 {
+  background-color: #cfc;
+}
+#block-block-67 {
+  background-color: #fcc;
+}
+#block-block-68 {
+  background-color: #ca9;
+}
+#block-block-69 {
+  background-color: #9ac;
+}
+#block-block-70 {
+  background-color: #9ca;
+}
+
+.block {
+  &.tablet-hidden {
+    @include breakpoint ($bp-tablet) {
+      display: none;
+    }
+  }
+  &.phone-hidden {
+    @include breakpoint ($bp-phone-max) {
+      display: none;
+    }
+  }
+}

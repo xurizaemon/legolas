@@ -1,0 +1,46 @@
+aside {
+  div.region-sidebar-second {
+    section.block {
+      margin-bottom: 10px;
+      img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
+    }
+  }
+}
+
+#block-block-3 {
+  a:hover {
+    text-decoration: none;
+  }
+  span {
+    display: block;
+    text-align: center;
+    color: $brand-dark;
+    font-weight: heavy;
+    font-size: 18px;
+    &.helpline-number {
+      color: white;
+      background-color: $brand-dark;
+      padding: 2px 5px;
+    }
+  }
+  // Sizes for different screens.
+  @include breakpoint($bp-sm-desktop) {
+    .helpline-text {font-size: 14px;}
+    .helpline-wordnumber {font-size: 18px;}
+    .helpline-number {font-size: 23px;}
+  }
+  @include breakpoint($bp-desktop) {
+    .helpline-text {font-size: 20px;}
+    .helpline-wordnumber {font-size: 25px;}
+    .helpline-number {font-size: 32px;}
+  }
+  @include breakpoint($bp-lg-desktop) {
+    .helpline-text {font-size: 24px;}
+    .helpline-wordnumber {font-size: 30px;}
+    .helpline-number {font-size: 32px;}
+  }
+}

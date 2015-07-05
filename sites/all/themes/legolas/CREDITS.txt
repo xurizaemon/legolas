@@ -1,0 +1,8 @@
+This theme combines the work of ...
+
+* Bootstrap - http://getbootstrap.com/
+* Drupal Bootstrap module - https://drupal.org/project/bootstrap
+* Compass - 
+* Bubbles by Megan Mitchell from the Noun Project - https://thenounproject.com/search/?q=bubbles&i=26117
+* Bubbles by Chiara Rossi from the Noun Project - https://thenounproject.com/search/?q=bubbles&i=80754
+

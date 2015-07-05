@@ -1,0 +1,156 @@
+@charset "UTF-8";
+@import "bootstrap-compass";
+@import "bootstrap";
+@import "compass/css3";
+@import "breakpoint";
+
+@import "variables";
+@import "mixins";
+
+@import "fonts";
+
+@import "navigation";
+@import "frontpage";
+@import "breadcrumb";
+@import "tabbed_slider";
+@import "header";
+@import "footer";
+@import "sidebar";
+@import "dev";
+@import "legolas";
+
+// @import "forms";
+// @import "bootstrap-select";
+// @import "blocks";
+// @import "menu";
+// @import "aboutus";
+// @import "civicrm";
+// @import "carousel";
+// @import "hacks";
+
+body {
+  background-color: $lightgrey;
+}
+
+header,
+header.navbar-default,
+div.main-container {
+  background-color: white;
+}
+
+.navbar.container {
+  margin-top: 0;
+  @include breakpoint($bp-sm-desktop) {
+    margin-top: 20px;
+  }
+  @include breakpoint($bp-sm-desktop) {
+    max-width: 750px;
+  }
+  @include breakpoint($bp-desktop) {
+    max-width: 970px;
+  }
+  @include breakpoint($bp-lg-desktop) {
+    max-width: 1170px;
+  }
+}
+
+.breadcrumb {
+  padding: 8px 0;
+  background-color: white;
+}
+
+.navbar-default {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+ul.navbar-nav {
+  background-color: $brand-dark;
+  ul {
+    background-color: $brand-dark;
+  }
+  li.open {
+    background-color: $brand-mid;
+  }
+  a {
+    color: white;
+  }
+}
+
+.block h2.block-title {
+  margin-top: 0;
+}
+
+header.navbar {
+  margin-bottom: 0;
+  border-width: 0;
+}
+
+.navbar-header {
+  // Why?
+  width: 100%;
+  a.navbar-brand {
+    display: none;
+  }
+}
+
+h1.page-header {
+  margin-top: 0;
+}
+
+#search-box {
+
+}
+
+.navbar-toggle {
+  margin-right: 5px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Trebuchet MS", Arial, sans-serif;
+}
+
+h1 {
+  font-size: 24px;
+}
+h2 {
+  font-size: 20px;
+}
+h3 {
+  font-size: 18px;
+}
+h4 {
+  font-size: 16px;
+}
+h5 {
+  font-size: 14px;
+}
+h6 {
+  font-size: 12px;
+}
+
+// Make region-above-content a diptych,
+// visible on mobile.
+div.region-above-content {
+  section {
+    @include make-sm-column(6);
+    padding: 10px;
+  }
+}
+
+
+// Make region-below-content a triptych,
+// hidden on mobile.
+div.region-below-content {
+  section {
+    @include make-sm-column(4);
+    padding: 10px;
+    @include breakpoint($bp-phone-max) {
+      display: none;
+    }
+  }
+
+  section:nth-child(3n + 1) {
+    clear: both;
+  }
+}
