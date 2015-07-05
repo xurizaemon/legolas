@@ -110,19 +110,20 @@ function importLegislation(path, callback) {
     fse.mkdirs(filePath, function (err) {
       if (err) return console.error(err);
       var file = fs.createWriteStream([filePath, fileName].join('/'));
-      var actTitle = fileName;
-      var actAssent = '1970-01-01';
+      var legTitle = fileName;
+      var legAssent = '1970-01-01';
       request.get(fileUrl, function(err, response, body) {
         xml2js.parseString(body, function(err, result) {
-          actTitle = result['act']['cover'][0]['title'][0];
-          actAssent = dateFormat(result['act']['cover'][0]['assent'], 'yyyy-mm-dd 12:00:00 +1200');
+          // console.log(result['act']['cover'][0], 'act');
+          legTitle = result['act']['cover'][0]['title'][0];
+          legAssent = dateFormat(result['act']['cover'][0]['assent'], 'yyyy-mm-dd 12:00:00 +1200');
           // console.log(result['act']['cover'][0]);
           var bodyText = body.toString();
           let createNode = {
             type: 'act',
-            title: actTitle,
-            // updated: actAssent,
-            // created: actAssent,
+            title: legTitle,
+            // updated: legAssent,
+            // created: legAssent,
             body: {
               und: [{
                 value: 'some html',
@@ -134,6 +135,9 @@ function importLegislation(path, callback) {
                 value: bodyText,
                 format: 'full_html'
               }]
+            },
+            field_legislation_id: {
+              und: [{value: result['act']['cover'][0]['$']['id']}]
             }
           };
           client.create(createNode)
@@ -148,6 +152,7 @@ function importLegislation(path, callback) {
             }
           })
           .then(function(newAct) {
+            console.log(legTitle + ' is ready for discussion at ' + 'http://legolas.nz/node/' + newAct.nid);
             /*
               client.retrieve(newAct.nid).then(function(retrievedAct) {
                 console.log(retrievedAct, 'new article');
@@ -156,7 +161,7 @@ function importLegislation(path, callback) {
             */
           });
         });
-        // console.log(actTitle, 'title');
+        // console.log(legTitle, 'title');
       })
         .on('error', function(err) {
           console.log(err);
