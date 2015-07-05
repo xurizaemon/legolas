@@ -9385,7 +9385,7 @@ body.front #block-views-legislation-block-2 {
 @media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/legolas\.nz\/www\/sites\/all\/themes\/legolas\/sass\/_legolas\.scss}line{font-family:\0000362}}
   .front-video iframe,
   .front-content iframe {
-    width: 560px;
+    width: 550px;
     height: 315px;
   }
 }
