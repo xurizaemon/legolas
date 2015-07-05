@@ -3,3 +3,12 @@
  * @file
  * Drupal needs this blank file.
  */
+
+function fleg_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'comment_node_act_form':
+      // dpm($form, $form);
+      break;
+
+  }
+}
