@@ -1,0 +1,81 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/docs.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Configuring XSL Formatter module</title>
+</head>
+<body>
+<h1>Configuring XSL Formatter module</h1>
+
+<p class="intro">Some usage examples.</p>
+You will
+<ol>
+    <li>Construct a content type, eg "Updates".
+</li><li>Attach a field to that content type to hold the XML data.
+</li><li>Edit the display settings to provide an XSL template that transforms the XML
+into something readable.
+</li></ol></p>
+<h2>Configuration</h2>
+<ol>
+    <li>Enable the XSL formatter module. This provides a new 'Format'
+        called "<strong>Transformed by XSL</strong>" that can be applied to
+        <strong>text</strong>, <strong>file</strong> and <strong>link</strong> field types.
+    </li>
+    <li>Create or edit your chosen content type.
+        ( <em>Home » Administration » Structure » Content types</em> )
+        to add your field.<p>
+
+            <img src="images/xsl_formatter-manage_fields.png"
+                 alt="Content type Manage Fields UI"/>
+        </p>
+    </li>
+    <li>
+        "<strong>Manage Display</strong>" of your content type, and select "<strong>Transformed by XSL</strong>"
+        as the format.
+        In the display settings, choose or upload your XSL file.
+        <p>
+            <img src="images/xsl_formatter-manage_display.png"
+                 alt="Content type Manage Display UI"/>
+        </p>
+        Uploaded XSL files will be available for re-use in other fields.
+    </li>
+    <li>
+        It's recommended to start by choosing one of the
+        'verbatim' or 'pretty-print' XSL files that comes with the project
+        before adding your own. This will demonstrate how the base system
+        works before introducing the complexity of XSL debugging.
+    </li>
+</ol>
+<h2>Troubleshooting</h2>
+
+<p>
+    XML and XSL are very picky syntaxes, and it's easy for things to go wrong.
+    Debugging info should be available in the Watchdog logs, with explanations
+    of errors found during parsing.
+</p>
+
+<p>
+    Using the remote URL source for your data can be problematic.
+    A network request to the original is made on each pageload, and if the
+    target is slow or offline, your page will be also.!
+    <br/>
+    The module uses the
+    <a href="http://php.net/manual/en/domdocument.load.php">DOMDocument::load</a>
+    function directly, so all issues related to that apply.
+    No additional headers, proxy configs or authentication are supported here.
+</p>
+
+<p>
+    As this request happens in realtime (on render request) it can be terribly
+    inefficient if you display this field in a list of views or anything.
+    <br/>
+    Drupal-level caching *may* help somewhat, but for performance
+    you are probably better to switch to using
+    <a href="https://www.drupal.org/project/feeds">Feeds module</a>
+    (plus <a href="https://www.drupal.org/project/feeds_xpathparser">Feeds XPath
+    Parser</a>)
+    to do your XML importing instead.
+</p>
+
+</body>
+</html>

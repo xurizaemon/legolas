@@ -1,0 +1,531 @@
+<?php
+
+/**
+ * @file
+ * Provides comments on fields.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function field_comments_menu() {
+  $items['admin/config/field_comments'] = array(
+    'title' => 'Field comments settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('field_comments_settings'),
+    'access arguments' => array('administer site configuration'),
+    // Don't clutter config page, config link from modules page is enough.
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['comment/reply/%node/field/%'] = array(
+    'title' => 'Add new comment',
+    'page callback' => 'field_comments_reply',
+    'page arguments' => array(2,4),
+    'access callback' => 'node_access',
+    'access arguments' => array('view', 2),
+  );
+  return $items;
+}
+
+/**
+ * This function is responsible for storing field and delta as static variable.
+ *
+ * @param object $node
+ *   Every comment belongs to a node. This is that node.
+ *
+ * @param string $field
+ *   Field this comment belongs to.
+ *
+ * @param int $delta
+ *   Delta for multiple value fields.
+ *
+ * @return array
+ *   The rendered field from parent node plus the comment form.
+ */
+function field_comments_reply($node, $field, $delta = 0) {
+  module_load_include('inc', 'comment', 'comment.pages');
+  drupal_static('field_comments', array('field' => $field, 'delta' => $delta));
+  return comment_reply($node);
+}
+
+/**
+ * Form constructor for drupal_get_form().
+ */
+function field_comments_settings() {
+  $form = array();
+  $form['field_comments_field_delete'] = array(
+    '#type' => 'radios',
+    '#title' => t('On field deletion'),
+    '#options' => array(0 => t('Move comments to node thread'), 1 => t('Delete comments on that field')),
+    '#default_value' => variable_get('field_comments_field_delete', 0),
+    '#description' => t('When a field is deleted, comments on that field can either be moved to node thread or deleted.'),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_field_formatter_info_alter().
+ */
+function field_comments_field_formatter_info_alter(&$info) {
+  // Add to all formatters.
+  foreach ($info as $formatter_key => &$formatter) {
+    $formatter['settings'] += array(
+      'field_comments' => '',
+      'field_comments_revision' => '',
+    );
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary_alter().
+ */
+function field_comments_field_formatter_settings_summary_alter(&$summary, $context) {
+  if ($context['instance']['entity_type'] == 'node') {
+    $settings = $context['instance']['display'][$context['view_mode']]['settings'];
+
+    if (!empty($settings['field_comments'])) {
+      $summary .= '<br />' . t('Comments enabled');
+    }
+    else {
+      $summary .= '<br />' . t('Comments disabled');
+    }
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_form_alter().
+ */
+function field_comments_field_formatter_settings_form_alter(&$settings_form, $context) {
+  if ($context['instance']['entity_type'] == 'node') {
+    $settings = $context['instance']['display'][$context['view_mode']];
+
+    $settings_form['field_comments'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable comments on this field'),
+      '#default_value' => $settings['settings']['field_comments'],
+      '#ajax' => array(
+        'callback' => 'field_comments_ajax_callback',
+        'wrapper' => 'field_comments_ajax_wrapper',
+      ),
+
+    );
+
+    $settings_form['field_comments_revision'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Link comments to field revision'),
+      '#prefix' => '<div id="field_comments_ajax_wrapper">',
+      '#suffix' => '</div>',
+      '#default_value' => $settings['settings']['field_comments_revision'],
+      '#disabled' => !$settings['settings']['field_comments'],
+      '#description' => t('Otherwise comments linked to all revisions of a field.'),
+    );
+
+    // Adding second checbox via ajax.
+    // Looping through all fields to find currently edited formatter settings.
+    foreach ($context['form_state']['values']['fields'] as $field) {
+      if (isset($field['settings_edit_form']['settings']['field_comments'])) {
+        if ($field['settings_edit_form']['settings']['field_comments'] == TRUE) {
+          $settings_form['field_comments_revision']['#disabled'] = FALSE;
+        }
+        else {
+          $settings_form['field_comments_revision']['#disabled'] = TRUE;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Ajax handler for changing field revision linking on the 'Manage display' screen.
+ */
+function field_comments_ajax_callback($form, $form_state) {
+  // Looping through all fields to find currently edited formatter settings.
+  foreach ($form_state['values']['fields'] as $field_name => $field) {
+    if (isset($field['settings_edit_form']['settings']['field_comments'])) {
+      return $form['fields'][$field_name]['format']['settings_edit_form']['settings']['field_comments_revision'];
+    }
+  }
+}
+
+/**
+ * Implements hook_field_attach_view_alter().
+ *
+ * Add comment thread and comment link after every field value...
+ */
+function field_comments_field_attach_view_alter(&$output, $context) {
+
+  if ($context['entity_type'] == 'node') {
+    $object = $context['entity'];
+    foreach (element_children($output) as $field_name) {
+
+      $element = &$output[$field_name];
+      $info = field_comments_formatter_info($field_name, $context['entity_type'], $context['entity']->type, $context['view_mode']);
+
+      if (!empty($info['field_comments'])) {
+        foreach ($element['#items'] as $delta => $item) {
+          $field_content = $element[$delta];
+          unset($element[$delta]);
+          $element[$delta]['field'] = $field_content;
+
+          // Creating href attribute for comment link.
+          $href = 'comment/reply/' . $object->nid . '/field/' . $field_name;
+          // Append delta only if it's greater than 0 (0 is default).
+          $href .= $delta > 0 ? '/' . $delta : '';
+
+          $element[$delta]['links'] = array(
+            '#attributes' => array('class' => array('links', 'inline')),
+            '#pre_render' => array('drupal_pre_render_links'),
+            '#printed' => FALSE,
+            '#theme' => 'links__node',
+            'comment' => array(
+              '#attributes' => array('class' => array('links', 'inline')),
+              '#links' => array(
+                'comment-add' => array(
+                  'title' => 'Add new comment',
+                  'href' => $href,
+                  'attributes' => array('title' => t('Add a new comment to this field.')),
+                  'fragment' => 'comment-form',
+                ),
+              ),
+              '#theme' => 'links__node_comment',
+            ),
+            '#prefix' => '<div class="link-wrapper">',
+            '#suffix' => '</div>',
+          );
+
+          if ($comments = field_comments_get_field_comments($object, $field_name, $delta, $info['field_comments_revision'])) {
+            $element[$delta]['comments'] = $comments;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Builds comment render array for single field.
+ *
+ * @param object $node
+ *   Every comment belongs to a node. This is that node.
+ * @param string $field_name
+ *   Name of the field this comment belongs to.
+ * @param string $delta
+ *   Field delta for multi value fields.
+ *
+ * @return array
+ *   Render array of comments for given field.
+ */
+function field_comments_get_field_comments($node, $field_name, $delta, $revisioning = FALSE) {
+  // Only attempt to render comments if the node has visible comments.
+  // Unpublished comments are not included in $node->comment_count, so show
+  // comments unconditionally if the user is an administrator.
+  if (($node->comment_count && user_access('access comments')) || user_access('administer comments')) {
+
+    $query = db_select('comments_field', 'cf');
+    $query->join('comment', 'c', 'c.cid = cf.cid');
+    $query->fields('cf', array('cid'))
+      ->condition('cf.nid', $node->nid)
+      ->condition('cf.field', $field_name)
+      ->condition('cf.delta', (int) $delta)
+      ->addTag('node_access')
+      ->addTag('comment_filter')
+      ->addMetaData('node', $node);
+
+    if (!user_access('administer comments')) {
+      $query->condition('c.status', COMMENT_PUBLISHED);
+    }
+
+    if ($revisioning) {
+      $query->condition('cf.vid', $node->vid);
+    }
+
+    $query->addExpression('SUBSTRING(c.thread, 1, (LENGTH(c.thread) - 1))', 'torder');
+    $query->orderBy('torder', 'ASC');
+
+    if ($cids = $query->execute()->fetchCol()) {
+      $comments = comment_load_multiple($cids);
+      comment_prepare_thread($comments);
+      return comment_view_multiple($comments, $node);
+    }
+    return FALSE;
+  }
+}
+
+/**
+ * Get the formatter settings for a field instance and display.
+ *
+ * @param string $field_name
+ *   Name of the field.
+ * @param string $entity_type
+ *   Type of the entity.
+ * @param string $bundle
+ *   Entity bundle.
+ * @param string $display
+ *   Field display.
+ *
+ * @return array
+ *   Formatter settings.
+ */
+function field_comments_formatter_info($field_name, $entity_type, $bundle, $display) {
+  $info = _field_info_collate_fields();
+  // There is no bundle for this entity type so the bundle
+  // name is the entity_type name.
+  if (empty($bundle)) {
+    $bundle = $entity_type;
+  }
+
+  $field_display = $info['instances'][$entity_type][$bundle][$field_name]['display'];
+  $default = $field_display['default']['settings'];
+  if (isset($field_display[$display]['settings'])) {
+    return $field_display[$display]['settings'] + $default;
+  }
+  return $default;
+}
+
+/**
+ * Implements hook_form_comment_form_alter().
+ */
+function field_comments_form_comment_form_alter(&$form, $form_state, $form_id) {
+  if ($field_comments = drupal_static('field_comments')) {
+    $field = $field_comments['field'];
+    $delta = $field_comments['delta'];
+  }
+  // Getting field and delta values submitted as hidden fields.
+  elseif (isset($_POST['field']) && isset($_POST['delta'])) {
+    $field = $_POST['field'];
+    $delta = $_POST['delta'];
+  }
+
+  // Attaching field and delta values as hidden fields.
+  if (isset($field) && isset($delta)) {
+    $form['field'] = array(
+      '#type' => 'hidden',
+      '#value' => $field,
+    );
+    $form['delta'] = array(
+      '#type' => 'hidden',
+      '#value' => $delta,
+    );
+  }
+}
+
+/**
+ * Implements hook_form_node_form_alter().
+ */
+function field_comments_form_node_form_alter(&$form, $form_state, $form_id) {
+  $form['#submit'][] = 'field_comments_submit_node';
+}
+
+/**
+ * Custom node form submit function.
+ *
+ * Attaches cids to corrresponding fields to allow
+ * them to be sorted by Field API on multiple value fields .
+ */
+function field_comments_submit_node($form, &$form_state) {
+  // Check if there are any comments on fields for this node.
+  if (isset($form_state['node']) && isset($form_state['node']->nid)) {
+
+    $result = db_select('comments_field', 'cf')
+      ->fields('cf', array('cid', 'field', 'delta'))
+      ->condition('nid', $form_state['node']->nid)
+      ->condition('vid', $form_state['node']->vid)
+      ->execute();
+
+    foreach ($result as $row) {
+      if (isset($form_state['values'][$row->field][LANGUAGE_NONE][$row->delta])) {
+        // Add cid to field item in array.
+        $form_state['values'][$row->field][LANGUAGE_NONE][$row->delta]['cids'][] = $row->cid;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function field_comments_node_delete($node) {
+  db_delete('comments_field')
+    ->condition('nid', $node->nid)
+    ->execute();
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function field_comments_node_update($node) {
+
+  // When a field with comments is deleted we need to delete rows from
+  // comments_field table what moves these comments to node thread.
+  // If field_comments_field_delete variable is set to 1 then we also delete
+  // these comments instead moving them to node thread
+  $result = db_select('comments_field', 'cf')
+    ->fields('cf', array('cid', 'field', 'delta'))
+    ->condition('nid', $node->nid)
+    ->condition('vid', $node->vid)
+    ->execute();
+
+  foreach ($result as $row) {
+    if (!isset($node->{$row->field}[LANGUAGE_NONE][$row->delta])) {
+
+      // Delete row from comemnts_field table.
+      db_delete('comments_field')
+        ->condition('cid', $row->cid)
+        ->execute();
+
+      $comments_delete = variable_get('field_comments_field_delete', 0);
+      if ($comments_delete == 1) {
+        // Delete row from comemnt table.
+        db_delete('comment')
+        ->condition('cid', $row->cid)
+        ->execute();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_comment_delete().
+ */
+function field_comments_comment_delete($comment) {
+  db_delete('comments_field')
+    ->condition('cid', $comment->cid)
+    ->execute();
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function field_comments_node_presave($node) {
+  // Attempt only if there are any comments on that node.
+  if (isset($node->comment_count) && $node->comment_count > 0) {
+    // Get field names for existing comments on fields.
+    $commentable_fields  = db_select('comments_field', 'cf')
+      ->fields('cf', array('field'))
+      ->distinct()
+      ->condition('nid', $node->nid)
+      ->condition('vid', $node->vid)
+      ->execute()
+      ->fetchCol();
+
+    if ($commentable_fields) {
+      foreach ($commentable_fields as $commentable_field) {
+        if (isset($node->{$commentable_field}[LANGUAGE_NONE])) {
+          for ($delta = 0; $delta < count($node->{$commentable_field}[LANGUAGE_NONE]); $delta++) {
+            if (isset($node->{$commentable_field}[LANGUAGE_NONE][$delta]['cids'])) {
+
+              // Insert new records matching field deltas.
+              foreach ($node->{$commentable_field}[LANGUAGE_NONE][$delta]['cids'] as $cid) {
+                db_merge('comments_field')
+                  ->key(array('cid' => $cid))
+                  ->fields(array(
+                    'nid' => $node->nid,
+                    'vid' => $node->vid,
+                    'field' => $commentable_field,
+                    'delta' => $delta,
+                  ))
+                  ->execute();
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_comment_insert().
+ */
+function field_comments_comment_insert($comment) {
+  if (isset($comment->field) && isset($comment->delta)) {
+    // Insert new record.
+    db_insert('comments_field')
+      ->fields(array(
+      'cid' => $comment->cid,
+      'nid' => $comment->nid,
+      'vid' => node_load($comment->nid)->vid,
+      'field' => $comment->field,
+      'delta' => $comment->delta,
+      ))
+      ->execute();
+  }
+  elseif ($comment->pid) {
+    $record = db_select('comments_field', 'cf')
+                ->fields('cf')
+                ->condition('cid', $comment->pid)
+                ->execute()
+                ->fetchObject();
+
+    if ($record) {
+      // Write new record to comments_fields table
+      // with all values other than cid inherited from parent.
+      db_insert('comments_field')
+        ->fields(array(
+          'cid' => $comment->cid,
+          'nid' => $record->nid,
+          'vid' => $record->vid,
+          'field' => $record->field,
+          'delta' => $record->delta,
+        ))
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_prepare_view().
+ */
+function field_comments_entity_prepare_view($entities, $type, $langcode) {
+  if ($type == 'comment') {
+    $cids = array_keys($entities);
+
+    $on_fields  = db_select('comments_field', 'cf')
+      ->fields('cf')
+      ->condition('cid', $cids, 'IN')
+      ->execute()
+      ->fetchCol();
+
+    foreach ($on_fields as $cid) {
+      $entities[$cid]->on_field = TRUE;
+    }
+    return $entities;
+  }
+}
+
+/**
+ * Preprocesses node variables.
+ */
+function field_comments_preprocess_node(&$vars) {
+
+  // Removes comments on fields from the node comments.
+  if (isset($vars['content']['comments']['comments'])) {
+    foreach ($vars['content']['comments']['comments'] as $cid => $comment) {
+      if (isset($comment['#comment']->on_field)) {
+        unset($vars['content']['comments']['comments'][$cid]);
+      }
+    }
+  }
+
+  $field_comments = drupal_static('field_comments');
+
+  // Removes other fields and unnecessary markup
+  // from node display if comment is made on field.
+  if (isset($field_comments['field']) && isset($field_comments['delta']) && isset($vars['content'][$field_comments['field']]['#items'][$field_comments['delta']])) {
+    $field = $field_comments['field'];
+    $delta = $field_comments['delta'];
+
+    $single_field = $vars['content'][$field];
+    $single_field['#items'] = array();
+    $single_field['#items'][$delta] = $vars['content'][$field]['#items'][$delta];
+    for ($i = 0; $i < count($single_field['#object']->{$field}[LANGUAGE_NONE]); $i++) {
+      if ($i != $delta) {
+        unset($single_field[$i]);
+      }
+    }
+    unset($single_field[$delta]['comments']);
+    unset($single_field[$delta]['links']);
+    $vars['content'] = $single_field;
+  }
+}

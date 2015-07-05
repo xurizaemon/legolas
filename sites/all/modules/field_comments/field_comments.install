@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Field comments installation routines
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function field_comments_schema() {
+  $schema['comments_field'] = array(
+    'description' => 'Allows commenting on multiple fields by relating field delta to comment id',
+    'fields' => array(
+      'cid' => array(
+        'description' => 'Comment ID',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+        'description' => 'Node ID',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'vid' => array(
+        'description' => 'Node version ID',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'field' => array(
+        'description' => 'Field',
+        'type' => 'varchar',
+        'length' => '100',
+        'not null' => FALSE,
+      ),
+      'delta' => array(
+        'description' => 'Field delta',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('cid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function field_comments_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'field_comments_%'");
+}

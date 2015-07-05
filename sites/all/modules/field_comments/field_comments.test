@@ -1,0 +1,69 @@
+<?php
+/**
+ * Tests the functionality of Field Comments module.
+ */
+class FieldComemntsTestCase extends DrupalWebTestCase {
+  protected $admin_user;
+  protected $web_user;
+  protected $node;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Field comments test',
+      'description' => 'Ensure that commenting on fields functions properly.',
+      'group' => 'Field Comments',
+    );
+  }
+
+  public function setUp() {
+
+    // Enable modules required for the test.
+    parent::setUp(array('field_comments'));
+
+    // Create users and test article node.
+    $this->admin_user = $this->drupalCreateUser(array('administer content types', 'access administration pages', 'administer nodes', 'bypass node access', 'administer comments'));
+    $this->web_user = $this->drupalCreateUser(array('access comments', 'post comments', 'edit own comments'));
+    $this->node = $this->drupalCreateNode(array('type' => 'article', 'promote' => 0, 'uid' => $this->admin_user->uid));
+
+    $this->drupalLogin($this->admin_user);
+
+    // Create a new field on article content type.
+    $label = 'Test field';
+    $field_name = 'test';
+    $initial_edit = array(
+      'fields[_add_new_field][type]' => 'text',
+      'fields[_add_new_field][widget_type]' => 'text_textfield',
+      'fields[_add_new_field][label]' => $label,
+      'fields[_add_new_field][field_name]' => $field_name,
+    );
+
+    // First step : 'Add new field' on the 'Manage fields' page.
+    $this->drupalPost('admin/structure/types/manage/article/fields',  $initial_edit, t('Save'));
+    $this->assertRaw(t('These settings apply to the %label field everywhere it is used.', array('%label' => $label)), t('Field settings page was displayed.'));
+
+    // Second step : 'Field settings' form.
+    $field_edit = array();
+    $this->drupalPost(NULL, $field_edit, t('Save field settings'));
+    $this->assertRaw(t('Updated field %label field settings.', array('%label' => $label)), t('Redirected to instance and widget settings page.'));
+
+    // Third step : 'Instance settings' form.
+    $instance_edit = array();
+    $this->drupalPost(NULL, $instance_edit, t('Save settings'));
+    $this->assertRaw(t('Saved %label configuration.', array('%label' => $label)), t('Redirected to "Manage fields" page.'));
+
+    // Check that the field appears in the overview form.
+    $this->assertFieldByXPath('//table[@id="field-overview"]//td[1]', $label, t('Field was created and appears in the overview page.'));
+  }
+
+
+  /**
+   * Login user, create an example node and test manage display interface.
+   */
+  function testFieldCommentsManageDisplay() {
+    $this->drupalLogin($this->admin_user);
+    $this->drupalGet('admin/structure/types/manage/article/display');
+    $this->assertRaw('Comments disabled');
+  }
+
+}
+?>
