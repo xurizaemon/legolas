@@ -25,7 +25,7 @@ sass_dir = "sass"
 images_dir = "images"
 javascripts_dir = "js"
 
-environment = :development
+# environment = :development
 
 if environment == :production
   sourcemap = false

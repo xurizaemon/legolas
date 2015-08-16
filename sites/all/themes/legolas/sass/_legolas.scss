@@ -74,3 +74,10 @@ body.front {
     }
   }
 }
+
+@media (max-width: 480px) {
+  .navbar-header a.logo img {
+    height: auto;
+  }
+}
+
