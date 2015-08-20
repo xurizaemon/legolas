@@ -222,6 +222,7 @@ function xsl_formatter_field_formatter_view($entity_type, $entity, $field, $inst
     }
 
     try {
+      dpm($data, 'data');
       // Tricky to catch errors.
       // Do this to toggle debug mode.
       if (!empty($display['settings']['debug'])) {
